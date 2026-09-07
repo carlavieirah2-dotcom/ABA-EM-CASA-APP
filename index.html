@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2b9c91">
+<title>ABA EM CASA</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f8f7;
+  color:#243433;
+  line-height:1.5;
+}
+
+.app{
+  max-width:600px;
+  margin:auto;
+  min-height:100vh;
+  background:white;
+}
+
+header{
+  background:#2b9c91;
+  color:white;
+  padding:24px 20px;
+}
+
+header h1{
+  font-size:28px;
+}
+
+header p{
+  margin-top:5px;
+  opacity:.95;
+}
+
+main{
+  padding:20px;
+}
+
+.card{
+  background:#f5faf9;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:16px;
+}
+
+h2{
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+h3{
+  margin-bottom:8px;
+}
+
+.button{
+  display:block;
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:15px;
+  margin-top:14px;
+  background:#2b9c91;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.button.secondary{
+  background:#e5f1ef;
+  color:#236f68;
+}
+
+/* OPÇÕES */
+.option{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  text-align:left;
+  padding:14px;
+  margin-top:9px;
+  border:2px solid #d5e5e2;
+  border-radius:12px;
+  background:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.option.selected{
+  border-color:#2b9c91;
+  background:#e5f1ef;
+  color:#236f68;
+  font-weight:bold;
+}
+
+.radio{
+  width:22px;
+  height:22px;
+  border:2px solid #8ba7a3;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+  background:white;
+}
+
+.option.selected .radio{
+  border-color:#2b9c91;
+}
+
+.option.selected .radio:after{
+  content:'';
+  width:11px;
+  height:11px;
+  background:#2b9c91;
+  border-radius:50%;
+}
+
+.hidden{
+  display:none;
+}
+
+.nav{
+  position:sticky;
+  bottom:0;
+  display:flex;
+  background:white;
+  border-top:1px solid #ddd;
+}
+
+.nav button{
+  flex:1;
+  padding:13px 5px;
+  border:0;
+  background:white;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.success{
+  padding:16px;
+  border-radius:14px;
+  background:#fff7d9;
+  margin-top:15px;
+}
+
+.record-item{
+  background:white;
+  border:1px solid #d5e5e2;
+  border-radius:14px;
+  padding:15px;
+  margin-top:10px;
+}
+
+.record-item strong{
+  color:#236f68;
+}
+
+.empty{
+  padding:15px;
+  border-radius:14px;
+  background:#f4f8f7;
+  margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <h1>ABA EM CASA</h1>
+  <p>Programa Digital de Apoio aos Pais de Crianças Autistas</p>
+</header>
+
+<main>
+
+<!-- INÍCIO -->
+<section id="inicio">
+
+  <div class="card">
+    <h2>Olá! Vamos continuar de onde paramos.</h2>
+    <p>
+      O ABA EM CASA orienta, acompanha e respeita o ritmo da família.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>🌱 Sua atividade de hoje</h2>
+
+    <h3>Pedir ajuda</h3>
+
+    <p>
+      Hoje vamos praticar uma situação simples em que a criança pode precisar de ajuda.
+    </p>
+
+    <button class="button" onclick="mostrar('atividade')">
+      VER ATIVIDADE
+    </button>
+  </div>
+
+  <div class="card">
+
+    <h3>📊 Meu progresso</h3>
+
+    <button class="button secondary" onclick="mostrarProgresso()">
+      VER MEU PROGRESSO
+    </button>
+
+    <h3 style="margin-top:18px">
+      📝 Registrar
+    </h3>
+
+    <button class="button secondary" onclick="mostrar('registro')">
+      FAZER REGISTRO
+    </button>
+
+    <h3 style="margin-top:18px">
+      🚨 Está acontecendo agora?
+    </h3>
+
+    <button class="button secondary" onclick="mostrar('crise')">
+      PRECISO DE AJUDA AGORA
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ATIVIDADE -->
+<section id="atividade" class="hidden">
+
+  <div class="card">
+
+    <h2>🎯 O que vamos praticar</h2>
+
+    <p>
+      Pedir ajuda quando a criança encontra uma pequena dificuldade.
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>👩 O que você faz</h3>
+
+    <p>
+      Coloque um objeto que a criança goste dentro de um pote ou recipiente seguro que seja possível abrir.
+    </p>
+
+    <p style="margin-top:10px">
+      Dê tempo para ela tentar.
+      Se precisar, ofereça uma pequena ajuda.
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>👀 O que você observa</h3>
+
+    <p>
+      Observe se ela tenta pedir ajuda, olha para você,
+      aponta, entrega o objeto ou usa outra forma de comunicação.
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>💛 Se acontecer</h3>
+
+    <p>
+      Quando ela conseguir comunicar que precisa de ajuda,
+      ajude e reconheça a tentativa.
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>📌 Registrar</h3>
+
+    <button class="button" onclick="mostrar('registro')">
+      REGISTRAR COMO FOI
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>ⓘ Entender melhor</h3>
+
+    <p>
+      Comunicação não acontece somente pela fala.
+      A criança pode utilizar diferentes formas para mostrar o que precisa.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- REGISTRO -->
+<section id="registro" class="hidden">
+
+  <div class="card">
+
+    <h2>📌 Como foi hoje?</h2>
+
+    <p>
+      Depois de fazer a atividade, escolha uma opção.
+    </p>
+
+
+    <button class="option"
+      data-opcao="Conseguiu sozinha"
+      onclick="selecionar(this)">
+
+      <span class="radio"></span>
+
+      Conseguiu sozinha
+
+    </button>
+
+
+    <button class="option"
+      data-opcao="Precisou de pouca ajuda"
+      onclick="selecionar(this)">
+
+      <span class="radio"></span>
+
+      Precisou de pouca ajuda
+
+    </button>
+
+
+    <button class="option"
+      data-opcao="Precisou de alguma ajuda"
+      onclick="selecionar(this)">
+
+      <span class="radio"></span>
+
+      Precisou de alguma ajuda
+
+    </button>
+
+
+    <button class="option"
+      data-opcao="Precisou de muita ajuda"
+      onclick="selecionar(this)">
+
+      <span class="radio"></span>
+
+      Precisou de muita ajuda
+
+    </button>
+
+
+    <button class="option"
+      data-opcao="Não realizou hoje"
+      onclick="selecionar(this)">
+
+      <span class="radio"></span>
+
+      Não realizou hoje
+
+    </button>
+
+
+    <button class="option"
+      data-opcao="Não foi possível fazer"
+      onclick="selecionar(this)">
+
+      <span class="radio"></span>
+
+      Não foi possível fazer
+
+    </button>
+
+
+    <button class="button" onclick="salvarRegistro()">
+      SALVAR REGISTRO
+    </button>
+
+
+    <div id="resultadoRegistro"></div>
+
+  </div>
+
+</section>
+
+
+<!-- PROGRESSO / REGISTROS -->
+<section id="progresso" class="hidden">
+
+  <div class="card">
+
+    <h2>📊 Meus registros</h2>
+
+    <p>
+      Aqui ficam os registros que você fez no ABA EM CASA.
+    </p>
+
+    <div id="listaRegistros"></div>
+
+    <button class="button" onclick="mostrar('inicio')">
+      🏠 VOLTAR AO INÍCIO
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- CRISE -->
+<section id="crise" class="hidden">
+
+  <div class="card">
+
+    <h2>🚨 ESTÁ ACONTECENDO AGORA?</h2>
+
+    <h3>Primeiro, cuide da segurança.</h3>
+
+    <p>
+      <strong>P — PROTEJA</strong><br>
+      Afaste objetos ou situações que possam causar machucados.
+    </p>
+
+    <p style="margin-top:12px">
+      <strong>A — ABAIXE OS ESTÍMULOS</strong><br>
+      Se possível, reduza barulho, pessoas, luzes e demandas.
+    </p>
+
+    <p style="margin-top:12px">
+      <strong>R — REGULE</strong><br>
+      Ofereça espaço e estratégias conhecidas e seguras.
+    </p>
+
+    <p style="margin-top:12px">
+      <strong>E — ESPERE</strong><br>
+      Dê tempo para a intensidade diminuir.
+    </p>
+
+
+    <div class="success">
+
+      <strong>Não é necessário registrar agora.</strong>
+
+      <p>
+        Quando estiver tudo tranquilo,
+        você poderá registrar o que aconteceu.
+      </p>
+
+    </div>
+
+
+    <button class="button" onclick="mostrar('registro')">
+      REGISTRAR DEPOIS
+    </button>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- MENU -->
+<nav class="nav">
+
+  <button onclick="mostrar('inicio')">
+    🏠<br>Início
+  </button>
+
+  <button onclick="mostrar('atividade')">
+    📚<br>Aprender
+  </button>
+
+  <button onclick="mostrar('registro')">
+    📝<br>Registrar
+  </button>
+
+  <button onclick="mostrarProgresso()">
+    📊<br>Progresso
+  </button>
+
+</nav>
+
+</div>
+
+
+<script>
+
+let selecionada = '';
+
+
+/* TROCAR DE TELA */
+function mostrar(id){
+
+  document
+    .querySelectorAll('main section')
+    .forEach(section => {
+      section.classList.add('hidden');
+    });
+
+  document
+    .getElementById(id)
+    .classList.remove('hidden');
+
+  window.scrollTo(0,0);
+}
+
+
+/* SELECIONAR UMA OPÇÃO */
+function selecionar(botao){
+
+  document
+    .querySelectorAll('.option')
+    .forEach(opcao => {
+      opcao.classList.remove('selected');
+    });
+
+  botao.classList.add('selected');
+
+  selecionada = botao.dataset.opcao;
+
+  document
+    .getElementById('resultadoRegistro')
+    .innerHTML = '';
+}
+
+
+/* PEGAR REGISTROS SALVOS */
+function obterRegistros(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem('abaEmCasaRegistros') || '[]'
+    );
+
+  }catch(e){
+
+    return [];
+
+  }
+
+}
+
+
+/* SALVAR REGISTRO */
+function salvarRegistro(){
+
+  const resultado =
+    document.getElementById('resultadoRegistro');
+
+
+  if(!selecionada){
+
+    resultado.innerHTML = `
+      <div class="empty">
+        Escolha uma opção antes de salvar.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  let registros = obterRegistros();
+
+
+  const novoRegistro = {
+
+    atividade: 'Pedir ajuda',
+
+    resultado: selecionada,
+
+    data: new Date().toLocaleString('pt-BR')
+
+  };
+
+
+  registros.unshift(novoRegistro);
+
+
+  localStorage.setItem(
+    'abaEmCasaRegistros',
+    JSON.stringify(registros)
+  );
+
+
+  resultado.innerHTML = `
+
+    <div class="success">
+
+      <h3>⭐ CONQUISTA!</h3>
+
+      <p>
+        Registro salvo:
+        <strong>${selecionada}</strong>.
+      </p>
+
+      <p style="margin-top:8px">
+        Seu registro ficou salvo neste dispositivo.
+      </p>
+
+      <button
+        class="button"
+        onclick="mostrarProgresso()">
+
+        📊 VER MEUS REGISTROS
+
+      </button>
+
+    </div>
+
+  `;
+
+
+  /* LIMPA A SELEÇÃO */
+  document
+    .querySelectorAll('.option')
+    .forEach(opcao => {
+      opcao.classList.remove('selected');
+    });
+
+
+  selecionada = '';
+
+}
+
+
+/* MOSTRAR PROGRESSO */
+function mostrarProgresso(){
+
+  renderRegistros();
+
+  mostrar('progresso');
+
+}
+
+
+/* MOSTRAR TODOS OS REGISTROS */
+function renderRegistros(){
+
+  const registros = obterRegistros();
+
+  const area =
+    document.getElementById('listaRegistros');
+
+
+  if(!registros.length){
+
+    area.innerHTML = `
+
+      <div class="empty">
+
+        Ainda não há registros.
+
+        <br><br>
+
+        Quando você salvar uma atividade,
+        ela aparecerá aqui.
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  area.innerHTML = registros.map(registro => `
+
+    <div class="record-item">
+
+      <strong>
+        🎯 ${registro.atividade}
+      </strong>
+
+      <p>
+        Como foi:
+        <strong>${registro.resultado}</strong>
+      </p>
+
+      <p style="font-size:13px;margin-top:5px">
+        Registrado em: ${registro.data}
+      </p>
+
+    </div>
+
+  `).join('');
+
+}
+
+</script>
+
+</body>
+</html>
