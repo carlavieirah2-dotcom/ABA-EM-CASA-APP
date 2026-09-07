@@ -1,0 +1,512 @@
+<script>
+/* ============================================================
+   CORREÇÕES ABA EM CASA — versão controlada
+   Não altera a biblioteca das 160 atividades.
+============================================================ */
+
+/* ---------- QUEBRA-CABEÇA MULTICOLORIDO ---------- */
+
+function puzzleIcon() {
+  return `
+    <svg class="aba-puzzle-svg" viewBox="0 0 48 48"
+         aria-label="Símbolo de quebra-cabeça"
+         role="img">
+      <path fill="#1f5fa8"
+        d="M4 4h15v7c0 2 1.5 3.5 3.5 3.5S26 13 26 11V4h8v10c0 2 1.5 3.5 3.5 3.5S41 16 41 14V4h3v17h-7c-2 0-3.5 1.5-3.5 3.5S35 28 37 28h7v7h-9c-2 0-3.5 1.5-3.5 3.5S33 42 35 42h9v2H26v-7c0-2-1.5-3.5-3.5-3.5S19 35 19 37v7H4V29h7c2 0 3.5-1.5 3.5-3.5S13 22 11 22H4V4z"/>
+
+      <path fill="#e91e63"
+        d="M26 4h8v7c0 2 1.5 3.5 3.5 3.5S41 13 41 11V4h3v17h-7c-2 0-3.5 1.5-3.5 3.5S35 28 37 28h7v7h-9c-2 0-3.5 1.5-3.5 3.5S33 42 35 42h9v2H26v-7c0-2-1.5-3.5-3.5-3.5S19 35 19 37v7h-3V29h7c2 0 3.5-1.5 3.5-3.5S25 22 23 22h-7V14h7c2 0 3.5-1.5 3.5-3.5S26 7 26 7V4z"
+        opacity=".95"/>
+
+      <path fill="#f7c843"
+        d="M4 4h15v7c0 2 1.5 3.5 3.5 3.5S26 13 26 11V4h8v14h-7c-2 0-3.5 1.5-3.5 3.5S25 25 27 25h7v9h-9c-2 0-3.5 1.5-3.5 3.5S23 41 25 41v3H4V29h7c2 0 3.5-1.5 3.5-3.5S13 22 11 22H4V4z"
+        opacity=".95"/>
+
+      <path fill="#4caf50"
+        d="M26 25h8v3h-7c-2 0-3.5 1.5-3.5 3.5S25 35 27 35h7v7h-9c-2 0-3.5 1.5-3.5 3.5V44h-3v-7c0-2 1.5-3.5 3.5-3.5S26 35 26 33V25z"
+        opacity=".95"/>
+    </svg>`;
+}
+
+function applyPuzzleIcons() {
+  document.querySelectorAll('.puzzle').forEach(el => {
+    el.innerHTML = puzzleIcon();
+  });
+}
+
+
+/* ---------- DIAGRAMAÇÃO ---------- */
+
+const correctionStyle = document.createElement('style');
+
+correctionStyle.textContent = `
+.meta-line{
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:4px;
+  white-space:nowrap;
+}
+
+.meta-line strong{
+  flex:none;
+}
+
+.aba-puzzle-svg{
+  width:29px;
+  height:29px;
+  display:inline-block;
+  vertical-align:middle;
+  margin-right:5px;
+}
+
+.puzzle{
+  background:none !important;
+  color:inherit !important;
+  width:30px;
+  height:30px;
+  vertical-align:middle;
+}
+
+.activity-type{
+  display:block;
+  margin:6px 0 12px;
+  color:#52706c;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.pending-only{
+  margin-bottom:16px;
+}
+
+.pending-only .card{
+  margin-bottom:0;
+}
+`;
+
+document.head.appendChild(correctionStyle);
+
+
+/* ---------- ATIVIDADE ATUAL ---------- */
+
+function getCurrentActivityId() {
+  const saved = Number(localStorage.getItem('aba_current_activity_id'));
+
+  if (saved && activities.some(a => a.id === saved)) {
+    return saved;
+  }
+
+  return 1;
+}
+
+function getCurrentActivity() {
+  return activities.find(a => a.id === getCurrentActivityId()) || activities[0];
+}
+
+function setCurrentActivity(id) {
+  localStorage.setItem('aba_current_activity_id', String(id));
+}
+
+
+/* ---------- TIPO DA ATIVIDADE ---------- */
+
+function getActivityType(activity) {
+  if (!activity) return 'Atividade';
+
+  const area = String(activity.area || '').toLowerCase();
+
+  if (area.includes('brincadeira')) return 'Brincadeira';
+  if (area.includes('rotina')) return 'Atividade de rotina';
+  if (area.includes('vida diária')) return 'Atividade de vida diária';
+  if (area.includes('organização')) return 'Atividade de organização';
+  if (area.includes('aprendizagem')) return 'Atividade de aprendizagem';
+  if (area.includes('situações difíceis')) return 'Atividade de apoio';
+  if (area.includes('autonomia')) return 'Atividade de autonomia';
+  if (area.includes('comunicação')) return 'Atividade de comunicação';
+
+  return 'Atividade';
+}
+
+
+/* ---------- CONTEÚDO ESPECÍFICO ---------- */
+
+function getMaterials(activity) {
+  if (!activity) {
+    return 'Materiais simples do dia a dia.';
+  }
+
+  if (activity.id === 1) {
+    return '1 pote com tampa<br>1 brinquedo pequeno e seguro que a criança goste';
+  }
+
+  return 'Os materiais necessários para esta atividade.';
+}
+
+function getObserve(activity) {
+  if (!activity) {
+    return 'Observe o que aconteceu durante a atividade e o tipo de ajuda oferecida.';
+  }
+
+  if (activity.id === 1) {
+    return 'Observe se a criança tenta pedir ajuda quando percebe que não consegue abrir o pote.';
+  }
+
+  return 'Observe o que aconteceu antes, durante e depois da atividade. Preste atenção ao que foi difícil e ao tipo de ajuda oferecida.';
+}
+
+function getDo(activity) {
+  if (!activity) return 'Faça a atividade seguindo as orientações apresentadas.';
+
+  if (activity.id === 1) {
+    return 'Coloque o brinquedo dentro do pote e feche a tampa. Entregue o pote à criança e espere. Se precisar, ajude somente o necessário.';
+  }
+
+  return `Faça a atividade "${activity.title}" seguindo as orientações apresentadas.`;
+}
+
+function getAfter(activity) {
+  if (!activity) return 'Registre como foi a atividade.';
+
+  return 'Registre como foi a atividade. Depois, escolha se deseja tentar novamente ou seguir para a próxima atividade.';
+}
+
+
+/* ---------- ABRIR ATIVIDADE ---------- */
+
+window.openToday = function() {
+  const activity = getCurrentActivity();
+
+  localStorage.setItem('aba_pending_id', String(activity.id));
+
+  renderActivity(activity);
+  showScreen('activity');
+};
+
+
+/* ---------- RENDERIZAÇÃO DA ATIVIDADE ---------- */
+
+function renderActivity(activity) {
+  if (!activity) return;
+
+  const title = document.getElementById('activityTitle');
+  const area = document.getElementById('activityArea');
+  const skill = document.getElementById('activitySkill');
+  const objective = document.getElementById('activityObjective');
+  const materials = document.getElementById('activityMaterials');
+  const doText = document.getElementById('doText');
+  const observe = document.getElementById('observeText');
+  const after = document.getElementById('afterText');
+
+  if (title) title.textContent = activity.title;
+  if (area) area.textContent = activity.area || 'Área não informada';
+  if (skill) skill.textContent = activity.skill || 'Habilidade não informada';
+  if (objective) objective.textContent = activity.objective || 'Objetivo da atividade.';
+  if (materials) materials.innerHTML = getMaterials(activity);
+  if (doText) doText.textContent = getDo(activity);
+  if (observe) observe.textContent = getObserve(activity);
+  if (after) after.textContent = getAfter(activity);
+
+  /* Remove qualquer "undefined" que tenha aparecido */
+  document.querySelectorAll('#activity *').forEach(el => {
+    if (el.children.length === 0 &&
+        el.textContent.trim().toLowerCase() === 'undefined') {
+      el.textContent = '';
+    }
+  });
+
+  /* Identificação concreta da atividade */
+  let type = document.getElementById('activityType');
+
+  if (!type) {
+    type = document.createElement('div');
+    type.id = 'activityType';
+    type.className = 'activity-type';
+
+    const titleEl = document.getElementById('activityTitle');
+
+    if (titleEl) {
+      titleEl.parentElement.insertAdjacentElement('afterend', type);
+    }
+  }
+
+  type.textContent = `🧸 ${getActivityType(activity)}: ${activity.title}`;
+
+  applyPuzzleIcons();
+}
+
+
+/* ---------- TELA INICIAL ---------- */
+
+function renderCurrentHome() {
+  const activity = getCurrentActivity();
+
+  const title = document.getElementById('homeTitle');
+  const area = document.getElementById('homeArea');
+  const skill = document.getElementById('homeSkill');
+  const description = document.getElementById('homeDescription');
+
+  if (title) title.textContent = activity.title;
+  if (area) area.textContent = activity.area || 'Área não informada';
+  if (skill) skill.textContent = activity.skill || 'Habilidade não informada';
+
+  if (description) {
+    description.textContent = activity.objective || '';
+  }
+
+  applyPuzzleIcons();
+}
+
+
+/* ---------- ATIVIDADE PENDENTE ---------- */
+
+function renderPending() {
+  const box = document.getElementById('pendingBox');
+  if (!box) return;
+
+  const pendingId = Number(localStorage.getItem('aba_pending_id'));
+
+  if (!pendingId) {
+    box.innerHTML = '';
+    return;
+  }
+
+  const activity = activities.find(a => a.id === pendingId);
+
+  if (!activity) {
+    localStorage.removeItem('aba_pending_id');
+    box.innerHTML = '';
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="card pending-only">
+      <div class="card" style="margin:0;background:#fff8e8;border:2px solid #f0d58a">
+        <h2>⚠️ ATIVIDADE NÃO REGISTRADA</h2>
+
+        <h3>
+          ${puzzleIcon()}
+          ${activity.title}
+        </h3>
+
+        <p>
+          Esta atividade ainda não foi registrada.
+          Conte como foi para podermos atualizar seu acompanhamento.
+        </p>
+
+        <button class="primary" onclick="openPendingActivity()">
+          REGISTRAR ATIVIDADE
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+window.openPendingActivity = function() {
+  const id = Number(localStorage.getItem('aba_pending_id'));
+  const activity = activities.find(a => a.id === id);
+
+  if (!activity) return;
+
+  renderActivity(activity);
+  showScreen('activity');
+};
+
+
+/* ---------- SALVAR PROGRESSO ---------- */
+
+window.saveProgress = function() {
+  const activity = getCurrentActivity();
+
+  const selected = document.querySelector('input[name="result"]:checked');
+
+  if (!selected) {
+    alert('Escolha uma opção para registrar como foi a atividade.');
+    return;
+  }
+
+  const records = JSON.parse(
+    localStorage.getItem('aba_records') || '[]'
+  );
+
+  const other = document.getElementById('otherSituation');
+
+  records.push({
+    activityId: activity.id,
+    activity: activity.title,
+    area: activity.area,
+    skill: activity.skill,
+    objective: activity.objective,
+    result: selected.value,
+    otherSituation: other ? other.value.trim() : '',
+    date: new Date().toLocaleString('pt-BR')
+  });
+
+  localStorage.setItem('aba_records', JSON.stringify(records));
+
+  localStorage.removeItem('aba_pending_id');
+
+  document.querySelectorAll('input[name="result"]').forEach(
+    input => input.checked = false
+  );
+
+  if (other) other.value = '';
+
+  showConquest(selected.value);
+};
+
+
+/* ---------- CONQUISTA NEUTRA ---------- */
+
+function getConquestMessage(result) {
+  switch(result) {
+    case 'Sozinha':
+      return 'Hoje foi possível realizar a atividade sem ajuda. Muito bom!';
+
+    case 'Pouca ajuda':
+      return 'Hoje foi possível realizar a atividade com pouca ajuda. Vocês estão avançando juntos.';
+
+    case 'Alguma ajuda':
+      return 'Hoje a atividade foi realizada com ajuda. Cada tentativa ajuda a entender como continuar.';
+
+    case 'Muita ajuda':
+      return 'Hoje vocês praticaram juntos. Cada tentativa ajuda a entender como continuar.';
+
+    case 'Não realizou':
+      return 'Tudo bem. Hoje foi difícil, mas vocês tentaram. Isso também ajuda a entender como continuar.';
+
+    case 'Situação difícil':
+      return 'Vocês passaram por um momento difícil e conseguiram registrar o que aconteceu. Isso ajuda a acompanhar e escolher os próximos passos.';
+
+    default:
+      return 'Atividade registrada. Cada registro ajuda a acompanhar o caminho da família.';
+  }
+}
+
+function showConquest(result) {
+  const message = document.getElementById('conquestMessage');
+
+  if (message) {
+    message.textContent = getConquestMessage(result);
+  }
+
+  const conquest = document.getElementById('conquest');
+
+  if (conquest) {
+    conquest.innerHTML = `
+      <div class="card conquest">
+        <div class="star">⭐</div>
+        <h2>CONQUISTA!</h2>
+
+        <p>${getConquestMessage(result)}</p>
+
+        <p style="margin-top:20px">
+          <strong>Você quer tentar esta atividade novamente?</strong>
+        </p>
+
+        <button class="primary" onclick="tryAgain()">
+          TENTAR NOVAMENTE
+        </button>
+
+        <button class="secondary" onclick="continueNext()">
+          IR PARA A PRÓXIMA ATIVIDADE
+        </button>
+
+        <button class="secondary" onclick="showScreen('home')">
+          🏠 VOLTAR AO INÍCIO
+        </button>
+      </div>
+    `;
+  }
+
+  showScreen('conquest');
+}
+
+
+/* ---------- TENTAR NOVAMENTE ---------- */
+
+window.tryAgain = function() {
+  const activity = getCurrentActivity();
+
+  localStorage.setItem('aba_pending_id', String(activity.id));
+
+  renderActivity(activity);
+  showScreen('activity');
+};
+
+
+/* ---------- PRÓXIMA ATIVIDADE ---------- */
+
+window.continueNext = function() {
+  const currentId = getCurrentActivityId();
+
+  let position = activities.findIndex(
+    activity => activity.id === currentId
+  );
+
+  if (position < 0) position = 0;
+
+  position++;
+
+  if (position >= activities.length) {
+    position = 0;
+  }
+
+  const next = activities[position];
+
+  setCurrentActivity(next.id);
+
+  renderCurrentHome();
+  renderPending();
+
+  showScreen('home');
+};
+
+window.nextActivity = function() {
+  continueNext();
+};
+
+
+/* ---------- NÃO DEIXAR ATIVIDADE ANTIGA APARECER COMO "HOJE" ---------- */
+
+function cleanOldPending() {
+  const pendingId = Number(localStorage.getItem('aba_pending_id'));
+
+  if (!pendingId) return;
+
+  const records = JSON.parse(
+    localStorage.getItem('aba_records') || '[]'
+  );
+
+  const alreadyRegistered = records.some(
+    record => Number(record.activityId) === pendingId
+  );
+
+  if (alreadyRegistered) {
+    localStorage.removeItem('aba_pending_id');
+  }
+}
+
+
+/* ---------- CORRIGIR QUALQUER "UNDEFINED" VISÍVEL ---------- */
+
+function removeUndefinedText() {
+  document.querySelectorAll('body *').forEach(el => {
+    if (el.children.length === 0 &&
+        el.textContent.trim().toLowerCase() === 'undefined') {
+
+      el.textContent = '';
+    }
+  });
+}
+
+
+/* ---------- INICIALIZAÇÃO ---------- */
+
+cleanOldPending();
+renderCurrentHome();
+renderPending();
+applyPuzzleIcons();
+removeUndefinedText();
+
+</script>
